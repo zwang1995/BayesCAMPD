@@ -14,9 +14,9 @@ This repository contains the data and scripts involved in the manuscript:
 * Aspen Plus: chemical process simulation
 
 ## Note
-The process simulation involved in this work is largely supported by our automatic simulation tool, which can be found in "[**Automatic Process Simulation in Aspen Plus**](https://github.com/zwang1995/Aspen-Plus-Automation)".  
+The process simulation involved in this work is largely supported by our automated simulation tool, which can be found in the repository [**Aspen-Plus-Automation**](https://github.com/zwang1995/Aspen-Plus-Automation).  
 
 ## Authors
-* [Zihao Wang](https://www.mpi-magdeburg.mpg.de/person/109361/842836)
+* [Zihao Wang](https://zwang1995.github.io)
 * [Prof. Dr.-Ing. Teng Zhou](https://facultyprofiles.hkust-gz.edu.cn/faculty-personal-page/ZHOU-Teng/tengzhou)
 * [Prof. Dr.-Ing. Kai Sundmacher](https://www.mpi-magdeburg.mpg.de/person/24754/16345)
