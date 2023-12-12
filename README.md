@@ -8,8 +8,8 @@ This repository contains the data and scripts involved in the manuscript:
 ### Library (Python 3.10)
 * [SMT (Surrogate Modeling Toolbox)](https://smt.readthedocs.io/en/stable/): sampling methods
 * [scikit-learn](https://scikit-learn.org/stable/): Gaussian process regression
-* [scipy](https://pymoo.org/): differential evolution 
-* [matplotlib](https://matplotlib.org/): visualization
+* [SciPy](https://scipy.org/): differential evolution 
+* [Matplotlib](https://matplotlib.org/): visualization
 
 ### Software
 * Aspen Plus: chemical process simulation
