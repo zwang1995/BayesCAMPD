@@ -12,12 +12,13 @@ def get_params(target, strategy, considerSolvent, saveInitialData=True, solvent=
         "saveInitialData": saveInitialData,
         "random_seed": 42,
         "sampling_method": "latin_hypercube",  # ["random", "latin_hypercube"]
+        "optim_method": "DE",  # ["DE", "GA"]
         "normInput": False,
         "normOutput": True,
         "useLogit": True,
 
         "file_mol": "../data/Bayesian/0_Property_UNIFAC.csv",
-        "file_bkp": "../simulation/ExtractiveDistillation_T1T2_TAC.bkp",
+        "file_bkp": "../simulation/ExtractiveDistillation_T1T2.bkp",
 
         "puri_lb": 0.,  # [0., 0.5]
         "puri_ub": 1.,
@@ -34,9 +35,9 @@ def get_params(target, strategy, considerSolvent, saveInitialData=True, solvent=
         if strategy == "OneShot":
             params["list_n_sample"] = [128, 256, 384, 512, 640, 768, 896, 1024, 1536, 2048, 2560, 3072, 3584, 4096]
     else:
-        params["list_n_sample"] = [128, 256, 384, 512]
+        params["list_n_sample"] = [128, 256, 384, 512, 640, 768, 896, 1024]
         if strategy == "OneShot":
-            params["list_n_sample"] = [128, 256, 384, 512]
+            params["list_n_sample"] = [128, 256, 384, 512, 640, 768, 896, 1024]
     params["active_list_n_sample"] = params["list_n_sample"]
 
     if strategy == "Bayesian":
@@ -54,10 +55,15 @@ def get_params(target, strategy, considerSolvent, saveInitialData=True, solvent=
     params["bound"] = None
     mol_integrality = [0] * len(params["col_mol"])
     pro_integrality = [1, 0, 0, 0, 1, 0, 0]
+    x_name_mol = ["S", "CP", "HV"]
+    x_name_pro = ["N1", "RR1", "P1", "StoF", "N2", "RR2", "P2"]
+
     if considerSolvent:
         params["integrality"] = mol_integrality + pro_integrality
+        params["x_name"] = x_name_mol + x_name_pro
     else:
         params["integrality"] = pro_integrality
+        params["x_name"] = x_name_pro
 
     str_task = "CAMPD" if considerSolvent else "CAPD"
     str_sol = f"_{solvent}" if solvent is not None else ""

@@ -105,10 +105,13 @@ def run_simulation_CAPD(aspen_plus, solvent_list, combine_loop, txt_file=None, l
 
 
 if __name__ == "__main__":
-    solvent_list = ["C8H12O4-E1"]
-    combine_loop = [[48.0, 8.69921875, 3.939453125, 2.17578125, 18.0, 1.09296875, 3.705078125]]
+    solvent_list = ["C2H6O2"]
+    combine_loop = [
+        # [62.0, 1.0000006228694327, 5.3802930194649425, 1.0000001936699137, 11.0, 0.2000003842613471, 3.500001079601739]
+        [50.0, 1.0000000159500884, 5.920618739011326, 1.0000000008133978, 9.0, 0.20000001848943452, 3.611805823884491]
+    ]
 
-    file_bkp = r"../simulation/ExtractiveDistillation_T1T2_TAC.bkp"
+    file_bkp = r"../simulation/ExtractiveDistillation_T1T2.bkp"
     aspen_plus = AspenPlusInterface(file_bkp)
     aspen_plus.load_bkp(visible_state=1)
 

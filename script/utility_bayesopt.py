@@ -156,7 +156,7 @@ def upper_confidence_bound(mu, sigma, lamb=1.0, obj="MAX"):
     return UCB
 
 
-def acquisition_func(x, params, model, f_train_best):
+def acquisition_func(x, params, model, y_tr_best):
     ac_mode = params["ac_mode"]
     x = x.reshape(1, -1)
 
@@ -165,10 +165,10 @@ def acquisition_func(x, params, model, f_train_best):
 
     af_value = None
     if ac_mode == "PI":
-        PI = probability_of_improvement(f, f_std, f_train_best, obj=obj)
+        PI = probability_of_improvement(f, f_std, y_tr_best, obj=obj)
         af_value = -PI
     elif ac_mode == "EI":
-        EI = expected_improvement(f, f_std, f_train_best, obj=obj)
+        EI = expected_improvement(f, f_std, y_tr_best, obj=obj)
         af_value = -EI
     elif ac_mode == "UCB":
         UCB = upper_confidence_bound(f, f_std, 1, obj=obj)

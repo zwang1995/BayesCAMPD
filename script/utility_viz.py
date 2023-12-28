@@ -102,12 +102,12 @@ def figure_1(paths, target, solvent=None):
 
     if target == "QH":
         y_label = "Q$_H$ (MW)"
-        ylim1_dict = {"CAMPD": extend_xylim(10, 50), "CAPD": extend_xylim(12, 18)}
-        ylim2_dict = {"CAMPD": extend_xylim(0, 13, onlyUp=True), "CAPD": extend_xylim(0, 3, onlyUp=True)}
+        ylim1_dict = {"CAMPD": extend_xylim(0, 50, onlyUp=True), "CAPD": extend_xylim(9, 18)}
+        ylim2_dict = {"CAMPD": extend_xylim(0, 12, onlyUp=True), "CAPD": extend_xylim(0, 3, onlyUp=True)}
     else:
         y_label = "TAC (MM$/yr)"
         ylim1_dict = {"CAMPD": extend_xylim(0, 15, onlyUp=True), "CAPD": extend_xylim(2, 6)}
-        ylim2_dict = {"CAMPD": extend_xylim(0, 13, onlyUp=True), "CAPD": extend_xylim(0, 3, onlyUp=True)}
+        ylim2_dict = {"CAMPD": extend_xylim(0, 12, onlyUp=True), "CAPD": extend_xylim(0, 3, onlyUp=True)}
 
     n_s, y_best, y_next = [], [], []
     n_failed, y_best_failed = [], []
@@ -220,8 +220,10 @@ def figure_1(paths, target, solvent=None):
     plt.xlabel("Initial sample size", size=label_size)
     plt.ylabel("Computational time (h)", size=label_size)
     plt.grid(linestyle="dotted", zorder=1)
-    # if task == "CAMPD":
-    plt.legend(prop={"size": legend_size}, ncol=1, loc="upper left", reverse=True)
+    if task == "CAMPD" and target == "TAC":
+        plt.legend(prop={"size": legend_size}, ncol=2, loc="upper left", reverse=True)
+    else:
+        plt.legend(prop={"size": legend_size}, ncol=1, loc="upper left", reverse=True)
         # plt.legend(prop={"size": legend_size}, ncol=2, loc="upper left", bbox_to_anchor=(0.07, 1), reverse=True)
     # else:
     #     plt.legend(prop={"size": legend_size}, ncol=1, loc="upper center", reverse=True)
@@ -245,12 +247,12 @@ def figure_1os(paths, path_res_os, target, solvent=None):
 
     if target == "QH":
         y_label = "Q$_H$ (MW)"
-        ylim1_dict = {"CAMPD": extend_xylim(10, 50), "CAPD": extend_xylim(12, 18)}
-        ylim2_dict = {"CAMPD": extend_xylim(0, 13, onlyUp=True), "CAPD": extend_xylim(0, 3, onlyUp=True)}
+        ylim1_dict = {"CAMPD": extend_xylim(0, 50, onlyUp=True), "CAPD": extend_xylim(12, 18)}
+        ylim2_dict = {"CAMPD": extend_xylim(0, 12, onlyUp=True), "CAPD": extend_xylim(0, 3, onlyUp=True)}
     else:
         y_label = "TAC (MM$/yr)"
         ylim1_dict = {"CAMPD": extend_xylim(0, 15, onlyUp=True), "CAPD": extend_xylim(2, 6)}
-        ylim2_dict = {"CAMPD": extend_xylim(0, 13, onlyUp=True), "CAPD": extend_xylim(0, 3, onlyUp=True)}
+        ylim2_dict = {"CAMPD": extend_xylim(0, 12, onlyUp=True), "CAPD": extend_xylim(0, 3, onlyUp=True)}
 
     x, y_best, y_next = [], [], []
     x_failed, y_best_failed = [], []
@@ -372,15 +374,12 @@ def figure_2A(paths, target, n_sample, solvent=None):
 
     if target == "QH":
         y_label = "Q$_H$ (MW)"
-        ylim1_dict = {"CAMPD": extend_xylim(0, 70, onlyUp=True), "CAPD": extend_xylim(12, 18)}
-        ylim2_dict = {"CAMPD": extend_xylim(0, 4, onlyUp=True), "CAPD": extend_xylim(0, 2, onlyUp=True)}
-        if n_sample == 640:
-            ylim1_dict["CAMPD"] = extend_xylim(20, 40)
-            ylim2_dict["CAMPD"] = extend_xylim(0, 9, onlyUp=True)
+        ylim1_dict = {"CAMPD": extend_xylim(9, 21), "CAPD": extend_xylim(9, 12)}
+        ylim2_dict = {"CAMPD": extend_xylim(0, 5, onlyUp=True), "CAPD": extend_xylim(0, 2, onlyUp=True)}
     else:
         y_label = "TAC (MM$/yr)"
         ylim1_dict = {"CAMPD": extend_xylim(2, 10), "CAPD": extend_xylim(3, 5)}
-        ylim2_dict = {"CAMPD": extend_xylim(0, 6, onlyUp=True), "CAPD": extend_xylim(0, 0.6, onlyUp=True)}
+        ylim2_dict = {"CAMPD": extend_xylim(0, 5, onlyUp=True), "CAPD": extend_xylim(0, 1.5, onlyUp=True)}
 
     suffix = f"{target}_{n_sample}"
     file_bo_monitor = path_res + f"optim_monitor_{suffix}.pkl"
@@ -482,11 +481,11 @@ def figure_2Asub(paths, target, n_sample, solvent=None):
 
     if target == "QH":
         y_label = "Q$_H$ (MW)"
-        ylim_dict = {"CAMPD": extend_xylim(10, 70, onlyUp=True), "CAPD": extend_xylim(7, 38)}
+        ylim_dict = {"CAMPD": extend_xylim(0, 90, onlyUp=True), "CAPD": extend_xylim(9, 12)}
 
     else:
         y_label = "TAC (MM$/yr)"
-        ylim_dict = {"CAMPD": extend_xylim(0, 27, onlyUp=True), "CAPD": extend_xylim(3, 5)}
+        ylim_dict = {"CAMPD": extend_xylim(0, 25, onlyUp=True), "CAPD": extend_xylim(3, 5)}
 
 
     suffix = f"{target}_{n_sample}"
@@ -559,11 +558,11 @@ def figure_2B(paths, target, n_sample, solvent=None):
     plt.rcParams["figure.figsize"] = (5, 4.5)
 
     if target == "QH":
-        ylim1_dict = {"CAMPD": extend_xylim(0.7, 1, onlyLow=True), "CAPD": extend_xylim(0.8, 1, onlyLow=True)}
-        ylim2_dict = {"CAMPD": extend_xylim(0.7, 1, onlyLow=True), "CAPD": extend_xylim(0.8, 1, onlyLow=True)}
+        ylim1_dict = {"CAMPD": extend_xylim(0.6, 1, onlyLow=True), "CAPD": extend_xylim(0.8, 1, onlyLow=True)}
+        ylim2_dict = {"CAMPD": extend_xylim(0.6, 1, onlyLow=True), "CAPD": extend_xylim(0.8, 1, onlyLow=True)}
     else:
-        ylim1_dict = {"CAMPD": extend_xylim(0.5, 1, onlyLow=True), "CAPD": extend_xylim(0.96, 1, onlyLow=True)}
-        ylim2_dict = {"CAMPD": extend_xylim(0.5, 1, onlyLow=True), "CAPD": extend_xylim(0.96, 1, onlyLow=True)}
+        ylim1_dict = {"CAMPD": extend_xylim(0.6, 1, onlyLow=True), "CAPD": extend_xylim(0.96, 1, onlyLow=True)}
+        ylim2_dict = {"CAMPD": extend_xylim(0.6, 1, onlyLow=True), "CAPD": extend_xylim(0.96, 1, onlyLow=True)}
 
     suffix = f"{target}_{n_sample}"
     file_bo_monitor = path_res + f"optim_monitor_{suffix}.pkl"
@@ -932,9 +931,9 @@ def figure_5(paths, target, solvent=None):
         n_samples = [128, 256, 384, 512, 640, 768, 896, 1024]
 
     if target == "QH":
-        yup_dict = {"CAMPD": 400, "CAPD": 600}
+        yup_dict = {"CAMPD": 400, "CAPD": 200}
     else:
-        yup_dict = {"CAMPD": 300, "CAPD": 300}
+        yup_dict = {"CAMPD": 400, "CAPD": 500}
 
     n_successes, n_optimizations, success_rates, n_convergences, convergence_rates, y_tr_best_ini = \
         [], [], [], [], [], []
@@ -990,10 +989,10 @@ def figure_5(paths, target, solvent=None):
     plt.ylabel("Frequency", size=label_size)
     plt.grid(linestyle="dotted", zorder=1)
     plt.tick_params(axis="x", labelbottom=False)
-    if task == "CAMPD" or target == "TAC":
-        plt.legend(prop={"size": legend_size}, loc="upper left")
-    else:
-        plt.legend(prop={"size": legend_size}, loc="upper center")
+    # if task == "CAMPD":
+    plt.legend(prop={"size": legend_size}, loc="upper right")
+    # else:
+    #     plt.legend(prop={"size": legend_size}, loc="upper right")
 
     plt.subplot(gs[1])
     scale_per = 100
@@ -1017,8 +1016,10 @@ def figure_5(paths, target, solvent=None):
     plt.xlabel("Initial sample size", size=label_size)
     plt.ylabel("Percentage", size=label_size)
     plt.grid(True, linestyle="dotted", zorder=1)
-    if task == "CAMPD":
-        plt.legend(prop={"size": legend_size}, loc="upper left")
+    # if task == "CAMPD":
+    plt.legend(prop={"size": legend_size}, loc="upper right")
+    # elif task == "CAMPD" and target == "TAC":
+    #     plt.legend(prop={"size": legend_size}, loc="upper right")
 
     plt.subplots_adjust(hspace=0.1)
     fig.align_labels()
@@ -1041,7 +1042,7 @@ def figure_5B(paths, target, solvent=None):
     else:
         n_samples = [128, 256, 384, 512, 640, 768, 896, 1024]
 
-    yup_dict = {"CAMPD": 3000, "CAPD": 2000}
+    yup_dict = {"CAMPD": 2000, "CAPD": 2000}
 
     n_simulations, n_convergences, convergence_rates = [], [], []
     for n_sample in n_samples:
@@ -1113,17 +1114,17 @@ def figure_0(paths, target, n_sample, solvent=None):
         xlabel_dict["y"] = "Q$_H$ (MW)"
         ylabel_dict["y"] = "Estimated Q$_H$ (MW)"
         if task == "CAMPD":
-            xytick_dict["y"] = [0, 25, 50, 75, 100, 125]
-            xylim_dict["y"] = [0, 125]
+            xytick_dict["y"] = [0, 50, 100, 150, 200, 250, 300]
+            xylim_dict["y"] = [0, 300]
         else:
-            xylim_dict["y"] = [0, 60]
+            xylim_dict["y"] = [0, 80]
     else:
         xlabel_dict["y"] = "TAC (MM$/yr)"
         ylabel_dict["y"] = "Estimated TAC (MM$/yr)"
         if task == "CAMPD":
-            xylim_dict["y"] = [0, 40]
+            xylim_dict["y"] = [0, 80]
         else:
-            xylim_dict["y"] = [0, 20]
+            xylim_dict["y"] = [0, 30]
 
     suffix = f"{target}_{n_sample}"
     file_bo_monitor = path_res + f"optim_monitor_{suffix}.pkl"
