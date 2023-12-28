@@ -4,6 +4,8 @@ This repository contains the data and scripts involved in the manuscript:
 
 **BayesCAMPD: Automated Integrated Molecular and Process Design Enabled by Bayesian Optimization**
 
+<img src="BayesCAMPD.png" width="800">
+
 ## Requirements 
 ### Library (Python 3.10)
 * [SMT (Surrogate Modeling Toolbox)](https://smt.readthedocs.io/en/stable/): sampling methods
