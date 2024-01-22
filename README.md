@@ -2,7 +2,7 @@
 
 This repository contains the data and scripts involved in the manuscript:
 
-**BayesCAMPD: Automated Integrated Molecular and Process Design Enabled by Bayesian Optimization**
+**Automated Integrated Molecular and Process Design Enabled by Bayesian Optimization (BayesCAMPD)**
 
 <img src="BayesCAMPD.png" width="800">
 
