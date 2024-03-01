@@ -577,7 +577,7 @@ if __name__ == "__main__":
     main(get_params("TAC", "OneShot", considerSolvent=True, saveInitialData=False))
     # </editor-fold>
 
-    # <editor-fold desc="CAPD using the identified solvent">
+    # <editor-fold desc="Process Optimization (CAPD) using the identified solvent">
     solvent = "C2H6O2"
     main(get_params("QH", "OneShot", considerSolvent=False, saveInitialData=True, solvent=solvent))
     time.sleep(10)

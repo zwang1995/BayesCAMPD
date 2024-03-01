@@ -89,7 +89,7 @@ def get_data(df, col, result_filter=None, isTuple=True):
         return y
 
 
-def figure_1(paths, target, solvent=None):
+def figure_1(paths, target, save_fig=True):
     path_res, path_viz = paths
     if "CAMPD" in path_viz:
         task = "CAMPD"
@@ -208,6 +208,7 @@ def figure_1(paths, target, solvent=None):
     plt.subplot(gs[1])
     time_by_step = {"Initial labeling": time_ini, "Extra labeling": time_extra,
                     "Modeling": time_model, "Optimization": time_optim}
+    print(time_by_step)
     color_map = ["mediumseagreen", "mediumpurple", "darkorange", "dodgerblue"]
     plt.stackplot(n_samples, time_by_step.values(), colors=color_map, labels=time_by_step.keys(), alpha=0.8, zorder=2)
     lw_, c_, alpha_ = 0.7, "w", 0.8
@@ -230,11 +231,12 @@ def figure_1(paths, target, solvent=None):
 
     plt.subplots_adjust(hspace=0.1)
     fig.align_labels()
-    plt.savefig(path_viz + f"{target}_1_n_sample")
+    if save_fig:
+        plt.savefig(path_viz + f"{target}_1_n_sample")
     plt.close()
 
 
-def figure_1os(paths, path_res_os, target, solvent=None):
+def figure_1os(paths, path_res_os, target, save_fig=True):
     path_res_bo, path_viz = paths
     if "CAMPD" in path_viz:
         task = "CAMPD"
@@ -357,11 +359,12 @@ def figure_1os(paths, path_res_os, target, solvent=None):
 
     plt.subplots_adjust(hspace=0.1)
     fig.align_labels()
-    plt.savefig(path_viz + f"{target}_1os_n_sample")
+    if save_fig:
+        plt.savefig(path_viz + f"{target}_1os_n_sample")
     plt.close()
 
 
-def figure_2A(paths, target, n_sample, solvent=None):
+def figure_2A(paths, target, n_sample, save_fig=True):
     path_res, path_viz = paths
     if "CAMPD" in path_viz:
         task = "CAMPD"
@@ -428,10 +431,11 @@ def figure_2A(paths, target, n_sample, solvent=None):
                 plt.scatter(idx_, yi, dot_size, "tab:red", edgecolors="k", linewidth=lw, zorder=4)
 
     fake_x, fake_y = 10, -10
-    plt.scatter(fake_x, fake_y, dot_size, "tab:red", edgecolors="k", linewidth=lw, label="Viable solution")
-    plt.scatter(fake_x, fake_y, dot_size, "lightgray", edgecolors="k", linewidth=lw, label="Inviable solution")
+    plt.scatter(fake_x, fake_y, dot_size, "tab:red", edgecolors="k", linewidth=lw, label="Feasible solution")
+    plt.scatter(fake_x, fake_y, dot_size, "lightgray", edgecolors="k", linewidth=lw, label="Infeasible solution")
 
     plt.step(idx, y_tr_best, c="tab:green", lw=1.2, zorder=5)
+    print(idx, y_tr_best)
     plt.xlim(extend_xylim(idx[0], idx[-1]))
     plt.ylim(ylim1_dict[task])
     plt.ylabel(y_label, size=label_size)
@@ -465,11 +469,12 @@ def figure_2A(paths, target, n_sample, solvent=None):
 
     plt.subplots_adjust(hspace=0.1)
     fig.align_labels()
-    plt.savefig(path_viz + f"{target}_2A_performance_{n_sample}")
+    if save_fig:
+        plt.savefig(path_viz + f"{target}_2A_performance_{n_sample}")
     plt.close()
 
 
-def figure_2Asub(paths, target, n_sample, solvent=None):
+def figure_2Asub(paths, target, n_sample, save_fig=True):
     path_res, path_viz = paths
     if "CAMPD" in path_viz:
         task = "CAMPD"
@@ -532,8 +537,8 @@ def figure_2Asub(paths, target, n_sample, solvent=None):
                 plt.scatter(idx_, yi, dot_size, "tab:red", edgecolors="k", linewidth=lw, zorder=4)
 
     fake_x, fake_y = 10, -10
-    plt.scatter(fake_x, fake_y, dot_size, "tab:red", edgecolors="k", linewidth=lw, label="Viable solution")
-    plt.scatter(fake_x, fake_y, dot_size, "lightgray", edgecolors="k", linewidth=lw, label="Inviable solution")
+    plt.scatter(fake_x, fake_y, dot_size, "tab:red", edgecolors="k", linewidth=lw, label="Feasible solution")
+    plt.scatter(fake_x, fake_y, dot_size, "lightgray", edgecolors="k", linewidth=lw, label="Infeasible solution")
 
     plt.step(idx, y_tr_best, c="tab:green", lw=1.2, zorder=5)
     plt.xlim(extend_xylim(idx[0], idx[-1]))
@@ -543,11 +548,12 @@ def figure_2Asub(paths, target, n_sample, solvent=None):
     plt.legend(prop={"size": legend_size}, ncol=1)
     plt.grid(linestyle="dotted", zorder=1)
 
-    plt.savefig(path_viz + f"{target}_2Asub_performance")
+    if save_fig:
+        plt.savefig(path_viz + f"{target}_2Asub_performance")
     plt.close()
 
 
-def figure_2B(paths, target, n_sample, solvent=None):
+def figure_2B(paths, target, n_sample, save_fig=True):
     path_res, path_viz = paths
     if "CAMPD" in path_viz:
         task = "CAMPD"
@@ -614,8 +620,8 @@ def figure_2B(paths, target, n_sample, solvent=None):
             else:
                 plt.scatter(idx_, yi, dot_size, "tab:red", edgecolors="k", linewidth=lw, zorder=4)
     fake_x, fake_y = 1, -1
-    plt.scatter(fake_x, fake_y, dot_size, "tab:red", edgecolors="k", linewidth=lw, label="Viable solution")
-    plt.scatter(fake_x, fake_y, dot_size, "lightgray", edgecolors="k", linewidth=lw, label="Inviable solution")
+    plt.scatter(fake_x, fake_y, dot_size, "tab:red", edgecolors="k", linewidth=lw, label="Feasible solution")
+    plt.scatter(fake_x, fake_y, dot_size, "lightgray", edgecolors="k", linewidth=lw, label="Infeasible solution")
     plt.xlim(xlim_dict[output])
     plt.ylim(ylim1_dict[task])
     plt.ylabel(ylabel_dict[output], size=label_size)
@@ -640,11 +646,12 @@ def figure_2B(paths, target, n_sample, solvent=None):
 
     plt.subplots_adjust(hspace=0.1)
     fig.align_labels()
-    plt.savefig(path_viz + f"{target}_2B_specification_{n_sample}")
+    if save_fig:
+        plt.savefig(path_viz + f"{target}_2B_specification_{n_sample}")
     plt.close()
 
 
-def figure_3(paths, target, n_sample):
+def figure_3(paths, target, n_sample, save_fig=True):
     path_res, path_viz = paths
     print("\nFigure_3")
     plt.clf()
@@ -735,11 +742,12 @@ def figure_3(paths, target, n_sample):
             if i < j:
                 axes[i, j].remove()
     fig.align_labels()
-    plt.savefig(path_viz + f"{target}_3_sol_dist")
+    if save_fig:
+        plt.savefig(path_viz + f"{target}_3_sol_dist")
     plt.close()
 
 
-def figure_3B(paths, target, n_sample):
+def figure_3B(paths, target, n_sample, save_fig=True):
     path_res, path_viz = paths
     print("\nFigure_3b")
     plt.clf()
@@ -818,11 +826,12 @@ def figure_3B(paths, target, n_sample):
             if i < j:
                 axes[i, j].remove()
     fig.align_labels()
-    plt.savefig(path_viz + f"{target}_3B_sol_dist")
+    if save_fig:
+        plt.savefig(path_viz + f"{target}_3B_sol_dist")
     plt.close()
 
 
-def figure_4(paths, target, n_sample):
+def figure_4(paths, target, n_sample, save_fig=True):
     path_res, path_viz = paths
     print("\nFigure 4")
     plt.clf()
@@ -882,7 +891,8 @@ def figure_4(paths, target, n_sample):
     #     plt.ylabel(ylabel_dict[col], size=label_size)
     #     plt.legend(prop={"size": legend_size}, ncol=2)
     #     plt.grid(linestyle="dotted")
-    #     plt.savefig(path_viz + f"4_prop_track_{col}")
+    #     if save_fig:
+    #         plt.savefig(path_viz + f"4_prop_track_{col}")
 
     # 2: combine
     gs = gridspec.GridSpec(3, 1)
@@ -911,11 +921,12 @@ def figure_4(paths, target, n_sample):
 
     plt.subplots_adjust(hspace=0.1)
     fig.align_labels()
-    plt.savefig(path_viz + f"{target}_4_prop_track")
+    if save_fig:
+        plt.savefig(path_viz + f"{target}_4_prop_track")
     plt.close()
 
 
-def figure_5(paths, target, solvent=None):
+def figure_5(paths, target, save_fig=True):
     path_res, path_viz = paths
     if "CAMPD" in path_viz:
         task = "CAMPD"
@@ -1023,11 +1034,12 @@ def figure_5(paths, target, solvent=None):
 
     plt.subplots_adjust(hspace=0.1)
     fig.align_labels()
-    plt.savefig(path_viz + f"{target}_5_success_rate")
+    if save_fig:
+        plt.savefig(path_viz + f"{target}_5_success_rate")
     plt.close()
 
 
-def figure_5B(paths, target, solvent=None):
+def figure_5B(paths, target, save_fig=True):
     path_res, path_viz = paths
     if "CAMPD" in path_viz:
         task = "CAMPD"
@@ -1092,11 +1104,12 @@ def figure_5B(paths, target, solvent=None):
 
     plt.subplots_adjust(hspace=0.1)
     fig.align_labels()
-    plt.savefig(path_viz + f"{target}_5B_convergence_rate")
+    if save_fig:
+        plt.savefig(path_viz + f"{target}_5B_convergence_rate")
     plt.close()
 
 
-def figure_0(paths, target, n_sample, solvent=None):
+def figure_0(paths, target, n_sample, save_fig=True):
     path_res, path_viz = paths
     if "CAMPD" in path_viz:
         task = "CAMPD"
@@ -1151,7 +1164,8 @@ def figure_0(paths, target, n_sample, solvent=None):
             plt.yticks(xytick_dict[label_])
         plt.xlabel(xlabel_dict[label_], size=label_size)
         plt.ylabel(ylabel_dict[label_], size=label_size)
-        plt.savefig(path_viz + f"{target}_6_parity_{label_}")
+        if save_fig:
+            plt.savefig(path_viz + f"{target}_6_parity_{label_}")
 
     for label, y_list, yhat_list in zip(["y", "g1", "g2"],
                                         [y, g1, g2],
@@ -1161,7 +1175,7 @@ def figure_0(paths, target, n_sample, solvent=None):
     plt.close()
 
 
-def figure_0B(paths, target, n_sample, solvent=None):
+def figure_0B(paths, target, n_sample, save_fig=True):
     path_res, path_viz = paths
     if "CAMPD" in path_viz:
         task = "CAMPD"
@@ -1246,7 +1260,8 @@ def figure_0B(paths, target, n_sample, solvent=None):
         plt.ylabel(ylabel_dict[label_], size=label_size)
 
         print(n_within1, n_within2, n_within3, n_total)
-        plt.savefig(path_viz + f"{target}_6B_parity_{label_}")
+        if save_fig:
+            plt.savefig(path_viz + f"{target}_6B_parity_{label_}")
 
     for label, y_list, yhat_list, yhat_std_list in zip(["y", "g1", "g2"],
                                                        [next_y, next_g1, next_g2],
