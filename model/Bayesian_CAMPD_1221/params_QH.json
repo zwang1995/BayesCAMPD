@@ -1,0 +1,144 @@
+{
+    "target": "QH",
+    "strategy": "Bayesian",
+    "considerSolvent": true,
+    "saveInitialData": false,
+    "random_seed": 42,
+    "sampling_method": "latin_hypercube",
+    "normInput": false,
+    "normOutput": true,
+    "useLogit": true,
+    "file_mol": "../data/Bayesian/0_Property_UNIFAC.csv",
+    "file_bkp": "../simulation/ExtractiveDistillation_T1T2_TAC.bkp",
+    "puri_lb": 0.0,
+    "puri_ub": 1.0,
+    "puri_spec": 0.995,
+    "col_mol": [
+        "S",
+        "CP",
+        "HV"
+    ],
+    "col_pro": [
+        "NStage_T1",
+        "RR_T1",
+        "TopPres_T1",
+        "StoF",
+        "NStage_T2",
+        "RR_T2",
+        "TopPres_T2"
+    ],
+    "solvent": null,
+    "list_n_sample": [
+        128,
+        256,
+        384,
+        512,
+        640,
+        768,
+        896,
+        1024
+    ],
+    "active_list_n_sample": [
+        128,
+        256,
+        384,
+        512,
+        640,
+        768,
+        896,
+        1024
+    ],
+    "n_reconnect": 32,
+    "n_iter": 1000,
+    "n_trial": 5,
+    "ac_mode": "EI",
+    "bound_pro": [
+        [
+            40,
+            80
+        ],
+        [
+            1,
+            10
+        ],
+        [
+            3.5,
+            6
+        ],
+        [
+            1,
+            8
+        ],
+        [
+            8,
+            20
+        ],
+        [
+            0.2,
+            2
+        ],
+        [
+            3.5,
+            6
+        ]
+    ],
+    "bound": [
+        [
+            0.010486453,
+            456.1224351
+        ],
+        [
+            19.2149987,
+            1853.11505
+        ],
+        [
+            19952.4218,
+            258085.549
+        ],
+        [
+            40,
+            80
+        ],
+        [
+            1,
+            10
+        ],
+        [
+            3.5,
+            6
+        ],
+        [
+            1,
+            8
+        ],
+        [
+            8,
+            20
+        ],
+        [
+            0.2,
+            2
+        ],
+        [
+            3.5,
+            6
+        ]
+    ],
+    "integrality": [
+        0,
+        0,
+        0,
+        1,
+        0,
+        0,
+        0,
+        1,
+        0,
+        0
+    ],
+    "path_out": "../model/Bayesian_CAMPD/",
+    "path_data": "../model/Bayesian_CAMPD/data/",
+    "path_script": "../model/Bayesian_CAMPD/script_QH",
+    "file_log": "../model/Bayesian_CAMPD/history_QH.log",
+    "file_params": "../model/Bayesian_CAMPD/params_QH.json"
+}
