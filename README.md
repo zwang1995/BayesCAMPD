@@ -1,8 +1,8 @@
-# BayesCAMPD: Automated Integrated Molecular and Process Design Enabled by Bayesian Optimization
+# Data-Driven Integrated Molecular and Process Design Using Bayesian Optimization
 
 This repository contains the data and scripts involved in the manuscript:
 
-**Automated Integrated Molecular and Process Design Enabled by Bayesian Optimization (BayesCAMPD)**
+**BayesCAMPD: Data-Driven Integrated Molecular and Process Design Accelerated by Bayesian Optimization**
 
 <img src="BayesCAMPD.png" width="800">
 
