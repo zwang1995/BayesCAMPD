@@ -2,7 +2,7 @@
 
 This repository contains the data and scripts involved in the manuscript:
 
-**BayesCAMPD: Data-Driven Integrated Molecular and Process Design Accelerated by Bayesian Optimization**
+**BayesCAMPD: Data-Efficient and Closed-Loop Integrated Molecular and Process Design Using Bayesian Optimization**
 
 <img src="BayesCAMPD.png" width="800">
 
