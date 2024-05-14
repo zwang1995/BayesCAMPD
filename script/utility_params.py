@@ -17,7 +17,7 @@ def get_params(target, strategy, considerSolvent, saveInitialData=True, solvent=
         "normOutput": True,
         "useLogit": True,
 
-        "file_mol": "../data/Bayesian/0_Property_UNIFAC.csv",
+        "file_mol": "../data/Property_UNIFAC.csv",
         "file_bkp": "../simulation/ExtractiveDistillation_T1T2.bkp",
 
         "puri_lb": 0.,  # [0., 0.5]

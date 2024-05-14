@@ -48,7 +48,7 @@ def logit_inverse(y):
     return 1 / (1 + np.exp(-y))
 
 
-def unnormalize(scaler, yhat, yhat_std):
+def inverse_normalize(scaler, yhat, yhat_std):
     mean, std = scaler.mean_[0], scaler.scale_[0]
     yhat = std * yhat + mean
     yhat_std = std * yhat_std

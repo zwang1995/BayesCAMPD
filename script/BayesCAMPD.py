@@ -2,7 +2,6 @@
 # Computer-Aided Molecular and Process Design using Bayesian Optimization
 # Gaussian process regression + Bayesian optimization + Automated process simulation
 
-
 from utility_params import *
 from utility_aspen import *
 from utility_model import *
@@ -20,7 +19,6 @@ import numpy as np
 import pandas as pd
 from scipy.optimize import differential_evolution, NonlinearConstraint
 from pymoo.optimize import minimize
-from pymoo.termination import get_termination
 from pymoo.core.mixed import MixedVariableGA
 from pymoo.core.variable import Real, Integer
 from pymoo.core.problem import ElementwiseProblem
@@ -567,7 +565,7 @@ def main(params, obj="MIN", constr=("DIST_C4H8_T1", "DIST_C4H6_T2")):
 
 
 if __name__ == "__main__":
-    # <editor-fold desc="CAMPD towards low TAC">
+    # <editor-fold desc="CAMPD minimizing QH/TAC">
     main(get_params("QH", "OneShot", considerSolvent=True, saveInitialData=False))
     time.sleep(10)
     main(get_params("QH", "Bayesian", considerSolvent=True, saveInitialData=False))
@@ -577,7 +575,7 @@ if __name__ == "__main__":
     main(get_params("TAC", "OneShot", considerSolvent=True, saveInitialData=False))
     # </editor-fold>
 
-    # <editor-fold desc="Process Optimization (CAPD) using the identified solvent">
+    # <editor-fold desc="Process Optimization using the optimal solvent">
     solvent = "C2H6O2"
     main(get_params("QH", "OneShot", considerSolvent=False, saveInitialData=True, solvent=solvent))
     time.sleep(10)
@@ -587,4 +585,3 @@ if __name__ == "__main__":
     time.sleep(10)
     main(get_params("TAC", "Bayesian", considerSolvent=False, saveInitialData=False, solvent=solvent))
     # </editor-fold>
-

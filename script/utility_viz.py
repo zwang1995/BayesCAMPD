@@ -197,11 +197,7 @@ def figure_1(paths, target, save_fig=True):
     plt.xlim(extend_xylim(n_samples[0], n_samples[-1]))
     plt.ylim(ylim1_dict[task])
     plt.ylabel(y_label, size=label_size)
-    # if task == "CAMPD":
     plt.legend(prop={"size": legend_size}, ncol=2, loc="upper left")
-        # plt.legend(prop={"size": legend_size}, ncol=2, loc="upper left", bbox_to_anchor=(0.07, 1))
-    # else:
-    #     plt.legend(prop={"size": legend_size}, ncol=2, loc="upper center")
     plt.grid(linestyle="dotted", zorder=1)
     plt.tick_params(axis="x", labelbottom=False)
 
@@ -225,14 +221,151 @@ def figure_1(paths, target, save_fig=True):
         plt.legend(prop={"size": legend_size}, ncol=2, loc="upper left", reverse=True)
     else:
         plt.legend(prop={"size": legend_size}, ncol=1, loc="upper left", reverse=True)
-        # plt.legend(prop={"size": legend_size}, ncol=2, loc="upper left", bbox_to_anchor=(0.07, 1), reverse=True)
-    # else:
-    #     plt.legend(prop={"size": legend_size}, ncol=1, loc="upper center", reverse=True)
 
     plt.subplots_adjust(hspace=0.1)
     fig.align_labels()
     if save_fig:
         plt.savefig(path_viz + f"{target}_1_n_sample")
+    plt.close()
+
+
+def figure_1_sup(paths, target, save_fig=True):
+    path_res, path_viz = paths
+    if "CAMPD" in path_viz:
+        task = "CAMPD"
+    else:
+        task = "CAPD"
+    scale_y = 1e3 if target == "QH" else 1e6
+    print(f"\n{task} Figure 1")
+    plt.clf()
+    plt.rcParams["figure.figsize"] = (5, 4.5)
+
+    if target == "QH":
+        y_label = "Q$_H$ (MW)"
+        ylim1_dict = {"CAMPD": extend_xylim(0, 50, onlyUp=True), "CAPD": extend_xylim(9, 18)}
+        ylim2_dict = {"CAMPD": extend_xylim(0, 15, onlyUp=True), "CAPD": extend_xylim(0, 3, onlyUp=True)}
+    else:
+        y_label = "TAC (MM$/yr)"
+        ylim1_dict = {"CAMPD": extend_xylim(0, 15, onlyUp=True), "CAPD": extend_xylim(2, 6)}
+        ylim2_dict = {"CAMPD": extend_xylim(0, 12, onlyUp=True), "CAPD": extend_xylim(0, 3, onlyUp=True)}
+
+    n_s, y_best, y_next = [], [], []
+    n_failed, y_best_failed = [], []
+    time_ini, time_extra, time_model, time_optim = [], [], [], []
+
+    if task == "CAMPD":
+        n_samples = [128, 256, 384, 512, 640, 768, 896, 1024]
+    else:
+        n_samples = [128, 256, 384, 512, 640, 768, 896, 1024]
+
+    if task == "CAMPD":
+        file_mol = path_res + "data/solvent_list.csv"
+        df_mol = pd.read_csv(file_mol)
+        alias_name_dict = {row["Solvent"]: row["cname"] for (idx, row) in df_mol.iterrows()}
+    else:
+        alias_name_dict = None
+
+    for n_sample in [256, 896]:
+        suffix = f"{target}_{n_sample}"
+        file_bo_monitor = path_res + f"optim_monitor_{suffix}.pkl"
+        bo_monitor_record = joblib.load(file_bo_monitor)
+        # print(bo_monitor_record)
+
+        fulfill_idx, next_x, next_y, next_alias, cand_props, next_g1, next_g2 = [], [], [], [], [], [], []
+        for record in bo_monitor_record:
+            if record["fulfillNext"]:
+                idx_feas = np.where(record["hasErrorNext"] == 0)[0]
+                x = np.array(record["next_x"])[0][idx_feas, :]
+                y = np.array(record["next_y"])
+                alias = np.array(record["next_alias"])
+                prop = np.array(record["candidate_props"])
+                g1 = np.array(record["next_g1"])
+                g2 = np.array(record["next_g2"])
+                idx_satisfy = np.where((g1 >= puri_spec) & (g2 >= puri_spec))[0]
+                idx_best = idx_satisfy[np.argmin(y[idx_satisfy])]
+
+                fulfill_idx.append(record["iteration"])
+                next_x.append(x[idx_best])
+                next_y.append(y[idx_best])
+                next_alias.append(alias[idx_best])
+                cand_props.append(prop[idx_best])
+                next_g1.append(g1[idx_best])
+                next_g2.append(g2[idx_best])
+
+        y_tr_best = bo_monitor_record[0]["y_tr_best"]
+        if len(fulfill_idx) > 0:
+            n_s.append(n_sample)
+            y_best.append(y_tr_best / scale_y)
+            y_next.append(next_y[-1] / scale_y)
+            if task == "CAMPD":
+                print(n_sample, y_tr_best, alias_name_dict[next_alias[-1]], next_y[-1], next_alias[-1],
+                      fulfill_idx[-1], [x for x in next_x[-1]], [x for x in cand_props[-1]])
+            else:
+                print(n_sample, y_tr_best, next_y[-1], next_alias[-1], fulfill_idx[-1],
+                      [x for x in next_x[-1]], [x for x in cand_props[-1]])
+            print(f"{int(next_x[-1][-7])}, {next_x[-1][-6]:.2f}, {next_x[-1][-5]:.2f}, "
+                  f"{int(next_x[-1][-3])}, {next_x[-1][-2]:.2f}, {next_x[-1][-1]:.2f}, "
+                  f"{next_x[-1][-4]:.2f}, {next_y[-1] / scale_y:.2f}")
+        else:
+            n_failed.append(n_sample)
+            y_best_failed.append(y_tr_best / scale_y)
+            print(n_sample, y_tr_best)
+
+        time_initial_labeling = bo_monitor_record[-1]["time_initial_labeling"]
+        time_extra_labeling = bo_monitor_record[-1]["time_extra_labeling"]
+        time_modeling = bo_monitor_record[-1]["time_modeling"]
+        time_optimization = bo_monitor_record[-1]["time_optimization"]
+        time_ini.append(time_initial_labeling / scale_t)
+        time_extra.append(time_extra_labeling / scale_t)
+        time_model.append(time_modeling / scale_t)
+        time_optim.append(time_optimization / scale_t)
+
+    gs = gridspec.GridSpec(2, 1)
+    fig = plt.figure()
+    plt.subplot(gs[0])
+    plt.scatter(n_s, y_best, dot_size, "tab:green", marker="s", edgecolors="k", linewidth=lw, zorder=3)
+    plt.scatter(n_s, y_next, dot_size, "tab:red", marker="s", edgecolors="k", linewidth=lw, zorder=3)
+    plt.scatter(n_failed, y_best_failed, dot_size, "tab:green", marker="s", edgecolors="k", linewidth=lw, zorder=3)
+    for xi, y_besti, y_nexti in zip(n_s, y_best, y_next):
+        plt.plot([xi, xi], [y_besti, y_nexti], "k-", zorder=2)
+
+    fake_x, fake_y = 1, -1
+    plt.scatter(fake_x, fake_y, dot_size, "tab:green", marker="s", edgecolors="k", linewidth=lw, label="Start")
+    plt.scatter(fake_x, fake_y, dot_size, "tab:red", marker="s", edgecolors="k", linewidth=lw, label="End")
+
+    plt.xticks(n_samples)
+    plt.xlim(extend_xylim(n_samples[0], n_samples[-1]))
+    plt.ylim(ylim1_dict[task])
+    plt.ylabel(y_label, size=label_size)
+    plt.legend(prop={"size": legend_size}, ncol=2, loc="upper center")
+    plt.grid(linestyle="dotted", zorder=1)
+    plt.tick_params(axis="x", labelbottom=False)
+
+    plt.subplot(gs[1])
+    time_by_step = {"Initial labeling": time_ini, "Extra labeling": time_extra,
+                    "Modeling": time_model, "Optimization": time_optim}
+    color_map = ["mediumseagreen", "mediumpurple", "darkorange", "dodgerblue"]
+
+    bottom = np.zeros(2)
+    for (label, t), color in zip(time_by_step.items(), color_map):
+        plt.bar([256, 896], t, 96, bottom=bottom, color=color, label=label, alpha=0.8, zorder=2)
+        bottom += t
+
+    plt.xticks(n_samples)
+    plt.xlim(extend_xylim(n_samples[0], n_samples[-1]))
+    plt.ylim(ylim2_dict[task])
+    plt.xlabel("Initial sample size", size=label_size)
+    plt.ylabel("Computational time (h)", size=label_size)
+    plt.grid(linestyle="dotted", zorder=1)
+    if task == "CAMPD" and target == "TAC":
+        plt.legend(prop={"size": legend_size}, ncol=2, loc="upper left", reverse=True)
+    else:
+        plt.legend(prop={"size": legend_size}, ncol=1, loc="upper center", reverse=True)
+
+    plt.subplots_adjust(hspace=0.1)
+    fig.align_labels()
+    if save_fig:
+        plt.savefig(path_viz + f"{target}_1sup_n_sample")
     plt.close()
 
 
@@ -439,8 +572,8 @@ def figure_2A(paths, target, n_sample, save_fig=True):
     plt.xlim(extend_xylim(idx[0], idx[-1]))
     plt.ylim(ylim1_dict[task])
     plt.ylabel(y_label, size=label_size)
-    if target == "QH":
-        plt.legend(prop={"size": legend_size}, ncol=1, loc="upper right")
+    if target == "QH" and task == "CAMPD":
+        plt.legend(prop={"size": legend_size}, ncol=1, loc="center right")
     else:
         plt.legend(prop={"size": legend_size}, ncol=1, loc="lower left")
     plt.grid(linestyle="dotted", zorder=1)
@@ -463,7 +596,7 @@ def figure_2A(paths, target, n_sample, save_fig=True):
     plt.xlim(extend_xylim(idx[0], idx[-1]))
     plt.ylim(ylim2_dict[task])
     plt.xlabel("Iteration", size=label_size)
-    plt.ylabel("Computational time (h)", size=label_size)
+    plt.ylabel("Accumulated time (h)", size=label_size)
     plt.grid(linestyle="dotted", zorder=1)
     plt.legend(prop={"size": legend_size}, ncol=1, loc="upper left", reverse=True)
 
@@ -491,7 +624,6 @@ def figure_2Asub(paths, target, n_sample, save_fig=True):
     else:
         y_label = "TAC (MM$/yr)"
         ylim_dict = {"CAMPD": extend_xylim(0, 25, onlyUp=True), "CAPD": extend_xylim(3, 5)}
-
 
     suffix = f"{target}_{n_sample}"
     file_bo_monitor = path_res + f"optim_monitor_{suffix}.pkl"
@@ -564,8 +696,8 @@ def figure_2B(paths, target, n_sample, save_fig=True):
     plt.rcParams["figure.figsize"] = (5, 4.5)
 
     if target == "QH":
-        ylim1_dict = {"CAMPD": extend_xylim(0.6, 1, onlyLow=True), "CAPD": extend_xylim(0.8, 1, onlyLow=True)}
-        ylim2_dict = {"CAMPD": extend_xylim(0.6, 1, onlyLow=True), "CAPD": extend_xylim(0.8, 1, onlyLow=True)}
+        ylim1_dict = {"CAMPD": extend_xylim(0.6, 1, onlyLow=True), "CAPD": extend_xylim(0.96, 1, onlyLow=True)}
+        ylim2_dict = {"CAMPD": extend_xylim(0.6, 1, onlyLow=True), "CAPD": extend_xylim(0.96, 1, onlyLow=True)}
     else:
         ylim1_dict = {"CAMPD": extend_xylim(0.6, 1, onlyLow=True), "CAPD": extend_xylim(0.96, 1, onlyLow=True)}
         ylim2_dict = {"CAMPD": extend_xylim(0.6, 1, onlyLow=True), "CAPD": extend_xylim(0.96, 1, onlyLow=True)}
@@ -972,12 +1104,6 @@ def figure_5(paths, target, save_fig=True):
     gs = gridspec.GridSpec(2, 1)
     fig = plt.figure()
     plt.subplot(gs[0])
-    # plt.plot(n_samples, n_optimizations, "o-", ms=1.1*np.sqrt(dot_size), color="tab:orange", zorder=3,
-    #          label="Optimization attempt")
-    # plt.plot(n_samples, n_successes, "^-", ms=np.sqrt(dot_size), color="tab:blue", zorder=3,
-    #          label="Optimization success")
-    # plt.plot(n_samples, n_convergences, "s-", ms=0.9 * np.sqrt(dot_size), color="tab:green", zorder=3,
-    #          label="Simulation success")
     if task == "CAMPD":
         dot_size_o = dot_size
     else:
@@ -1000,10 +1126,7 @@ def figure_5(paths, target, save_fig=True):
     plt.ylabel("Frequency", size=label_size)
     plt.grid(linestyle="dotted", zorder=1)
     plt.tick_params(axis="x", labelbottom=False)
-    # if task == "CAMPD":
     plt.legend(prop={"size": legend_size}, loc="upper right")
-    # else:
-    #     plt.legend(prop={"size": legend_size}, loc="upper right")
 
     plt.subplot(gs[1])
     scale_per = 100
@@ -1013,24 +1136,13 @@ def figure_5(paths, target, save_fig=True):
             zorder=2, label="Optimization success rate")
     plt.bar(np.array(n_samples) + bar_width, convergence_rates, 2 * bar_width, color="tab:green", alpha=0.8,
             zorder=2, label="Simulation success rate")
-    # plt.bar(np.array(n_samples) - bar_width, success_rates, 2 * bar_width, color="tab:blue", ec="tab:blue",
-    #         alpha=0.2, zorder=2, label="Optimization success rate")
-    # plt.bar(np.array(n_samples) + bar_width, convergence_rates, 2 * bar_width, color="tab:green", ec="tab:green",
-    #         alpha=0.2, zorder=2, label="Simulation success rate")
-    # plt.bar(np.array(n_samples) - bar_width, success_rates, 2 * bar_width, color="None", ec="tab:blue",
-    #         zorder=2)
-    # plt.bar(np.array(n_samples) + bar_width, convergence_rates, 2 * bar_width, color="None", ec="tab:green",
-    #         zorder=2)
     plt.xticks(n_samples)
     plt.xlim(n_samples[0] - 3 * bar_width, n_samples[-1] + 3 * bar_width)
     plt.ylim(0, 1 * scale_per)
     plt.xlabel("Initial sample size", size=label_size)
     plt.ylabel("Percentage", size=label_size)
     plt.grid(True, linestyle="dotted", zorder=1)
-    # if task == "CAMPD":
     plt.legend(prop={"size": legend_size}, loc="upper right")
-    # elif task == "CAMPD" and target == "TAC":
-    #     plt.legend(prop={"size": legend_size}, loc="upper right")
 
     plt.subplots_adjust(hspace=0.1)
     fig.align_labels()
@@ -1062,10 +1174,6 @@ def figure_5B(paths, target, save_fig=True):
         file_bo_monitor = path_res + f"optim_monitor_{suffix}.pkl"
         bo_monitor_record = joblib.load(file_bo_monitor)
         n_success, n_convergence = 0, 0
-        # for record in bo_monitor_record:
-        #     if record["hasErrorNext"] is not None:
-        #         n_success += len(record["hasErrorNext"])
-        #         n_convergence += len(np.where(record["hasErrorNext"] == 0)[0])
         n_simulation = bo_monitor_record[0]["n_simulation"]
         n_convergence = bo_monitor_record[0]["n_tr"]
         convergence_rate = n_convergence / n_simulation
@@ -1269,4 +1377,37 @@ def figure_0B(paths, target, n_sample, save_fig=True):
                                                        [next_yhat_std, next_g1hat_std, next_g2hat_std]):
         parity_with_uncertainty(label, y_list, yhat_list, yhat_std_list)
 
+    plt.close()
+
+
+def figure_6(path_viz, save_fig=True):
+    scale_y = 10 ** 6
+    DeTAC_1 = np.array([926847.5298, 284014.8054, 779363.3394, 1565269.088]) / scale_y
+    DeTAC_2 = np.array([811937.5585, 266736.3767, 802485.6546, 1545900.651]) / scale_y
+
+    species = ("Q$_H$", "TAC")
+    weight_counts = {
+        "Annualized CAPEX$_{EDC}$": np.array([DeTAC_1[0], DeTAC_2[0]]),
+        "Annualized CAPEX$_{SRC}$": np.array([DeTAC_1[1], DeTAC_2[1]]),
+        "OPEX$_{EDC}$": np.array([DeTAC_1[2], DeTAC_2[2]]),
+        "OPEX$_{SRC}$": np.array([DeTAC_1[3], DeTAC_2[3]])
+    }
+
+    width = 0.85
+
+    fig, ax = plt.subplots()
+    bottom = np.zeros(2)
+
+    for boolean, weight_count in weight_counts.items():
+        ax.bar(species, weight_count, width, label=boolean, bottom=bottom, zorder=3)
+        bottom += weight_count
+
+    ax.legend(loc="upper left", bbox_to_anchor=(1, 1), prop={"size": legend_size})
+    plt.xlim(extend_xylim(-0.5, 1.5))
+    plt.ylim(extend_xylim(0, 4, onlyUp=True))
+    plt.xlabel("Solvent", size=label_size)
+    plt.ylabel("TAC (MM$/yr)", size=label_size)
+    plt.grid(linestyle="dotted", zorder=1)
+    if save_fig:
+        plt.savefig(path_viz + "TAC_comp")
     plt.close()
