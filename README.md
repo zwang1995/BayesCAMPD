@@ -8,7 +8,7 @@ This repository contains the data and scripts involved in the manuscript:
 
 ## Requirements 
 ### Library (Python 3.10)
-* [SMT (Surrogate Modeling Toolbox)](https://smt.readthedocs.io/en/stable/): sampling methods
+* [SMT](https://smt.readthedocs.io/en/stable/): mixed integer sampling
 * [scikit-learn](https://scikit-learn.org/stable/): Gaussian process regression
 * [SciPy](https://scipy.org/): differential evolution 
 * [Matplotlib](https://matplotlib.org/): visualization
